@@ -6,6 +6,7 @@ import Context from './Context';
 function Provider({ children }) {
   const [planetData, setPlanetData] = useState({
     data: [],
+    filterByName: '',
   });
 
   useEffect(() => {
@@ -17,15 +18,19 @@ function Provider({ children }) {
     getData();
   }, []);
 
+  const filterName = (name) => {
+    setPlanetData((prevState) => ({ ...prevState, filterByName: name }));
+  };
+
   return (
-    <Context.Provider value={ { ...planetData } }>
+    <Context.Provider value={ { ...planetData, filterName } }>
       {children}
     </Context.Provider>
   );
 }
 
 Provider.propTypes = {
-  children: PropTypes.element.isRequired,
+  children: PropTypes.arrayOf(PropTypes.element).isRequired,
 };
 
 export default Provider;
