@@ -3,12 +3,6 @@ import Context from '../context/Context';
 
 function Filter() {
   const { filterByName, filterName, filterNumeric } = useContext(Context);
-  const [numericFilter, setNumericFilter] = useState(
-    { column: 'population',
-      comparison: 'maior que',
-      value: 0,
-    },
-  );
 
   const filters = {
     columns: [
@@ -17,9 +11,23 @@ function Filter() {
     comparison: ['maior que', 'menor que', 'igual a'],
   };
 
-  const handleChange = ({ target: { name, value } }) => setNumericFilter(
-    { ...numericFilter, [name]: value },
+  const [columnFilters, setColumnFilters] = useState(filters.columns);
+  const [numericFilter, setNumericFilter] = useState(
+    { column: 'population',
+      comparison: 'maior que',
+      value: 0,
+    },
   );
+
+  const handleChange = ({ target: { name, value } }) => {
+    setNumericFilter({ ...numericFilter, [name]: value });
+  };
+
+  const handleSubmit = () => {
+    filterNumeric(numericFilter);
+    setColumnFilters(columnFilters.filter((filter) => filter !== numericFilter.column));
+    setNumericFilter({ ...numericFilter, column: columnFilters[1] });
+  };
 
   return (
     <>
@@ -33,24 +41,23 @@ function Filter() {
       </div>
       <div>
         <select
-          data-testid="column-filter"
+          disabled={ columnFilters.length === 0 }
           name="column"
           value={ numericFilter.column }
+          data-testid="column-filter"
           onChange={ handleChange }
         >
-          {
-            filters.columns.map((column, index) => (
-              <option key={ index } value={ column }>
-                {column}
-              </option>
-            ))
-          }
+          { columnFilters.map((column, index) => (
+            <option key={ index } value={ column }>
+              {column}
+            </option>
+          ))}
         </select>
         <select
-          data-testid="comparison-filter"
-          name="comparison"
-          value={ numericFilter.comparison }
           onChange={ handleChange }
+          name="comparison"
+          data-testid="comparison-filter"
+          value={ numericFilter.comparison }
         >
           {
             filters.comparison.map((comparison, index) => (
@@ -61,16 +68,16 @@ function Filter() {
           }
         </select>
         <input
-          data-testid="value-filter"
           type="number"
+          onChange={ handleChange }
           name="value"
           value={ numericFilter.value }
-          onChange={ handleChange }
+          data-testid="value-filter"
         />
         <button
+          onClick={ handleSubmit }
           data-testid="button-filter"
           type="button"
-          onClick={ () => filterNumeric(numericFilter) }
         >
           FILTRAR
         </button>
