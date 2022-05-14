@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import Context from '../context/Context';
 
 function Table() {
-  const { data, filterByName, filtroNumeroValores } = useContext(Context);
+  const { data, filterByName, filterByNumericValues } = useContext(Context);
   const [tableData, setTableData] = useState([]);
   const [tableHeader, setTableHeader] = useState([]);
 
@@ -10,6 +10,7 @@ function Table() {
     if (data.length > 0) {
       data.map((planet) => delete planet.residents);
       setTableData(data);
+
       setTableHeader(Object.keys(data[0]));
     }
   }, [data]);
@@ -35,7 +36,7 @@ function Table() {
         }
       });
     } else { setTableData(newData); }
-  }, [data, filterByName, filtroNumeroValores]);
+  }, [data, filterByName, filterByNumericValues]);
 
   return (
     <div>

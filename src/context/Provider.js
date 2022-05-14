@@ -3,11 +3,11 @@ import React, { useEffect, useState } from 'react';
 import Planets from '../services/api';
 import Context from './Context';
 
-function Provider({ children }) {
+function PlanetsProvider({ children }) {
   const [planetData, setPlanetData] = useState({
     data: [],
     filterByName: '',
-    filterByNumero: [],
+    filterByNumericValues: [],
   });
 
   useEffect(() => {
@@ -23,22 +23,20 @@ function Provider({ children }) {
     setPlanetData((prevState) => ({ ...prevState, filterByName: name }));
   };
 
-  const filtroNumero = (filtro) => {
+  const filterNumeric = (filter) => {
     setPlanetData((prevState) => ({
       ...prevState,
-      filterByNumero: [...prevState, filterByNumero, filtro],
+      filterByNumericValues: [...prevState.filterByNumericValues, filter],
     }));
   };
 
   return (
-    <Context.Provider value={ { ...planetData, filterName, filtroNumero } }>
+    <Context.Provider value={ { ...planetData, filterName, filterNumeric } }>
       {children}
     </Context.Provider>
   );
 }
-
-Provider.propTypes = {
+PlanetsProvider.propTypes = {
   children: PropTypes.arrayOf(PropTypes.element).isRequired,
 };
-
-export default Provider;
+export default PlanetsProvider;
