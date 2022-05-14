@@ -1,8 +1,8 @@
 import React from 'react';
 import './App.css';
-import Provider from './context/Provider';
 import Table from './components/Table';
 import Filter from './components/Filter';
+import Provider from './context/Provider';
 
 function App() {
   return (

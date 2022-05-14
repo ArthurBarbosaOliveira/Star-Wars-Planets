@@ -7,6 +7,7 @@ function Provider({ children }) {
   const [planetData, setPlanetData] = useState({
     data: [],
     filterByName: '',
+    filterByNumero: [],
   });
 
   useEffect(() => {
@@ -22,8 +23,15 @@ function Provider({ children }) {
     setPlanetData((prevState) => ({ ...prevState, filterByName: name }));
   };
 
+  const filtroNumero = (filtro) => {
+    setPlanetData((prevState) => ({
+      ...prevState,
+      filterByNumero: [...prevState, filterByNumero, filtro],
+    }));
+  };
+
   return (
-    <Context.Provider value={ { ...planetData, filterName } }>
+    <Context.Provider value={ { ...planetData, filterName, filtroNumero } }>
       {children}
     </Context.Provider>
   );
