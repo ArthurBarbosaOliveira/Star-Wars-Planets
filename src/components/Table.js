@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import Context from '../context/Context';
 
 function Table() {
-  const { data, filterByName, filterByNumericValues } = useContext(Context);
+  const { data, filterByName, filterByNumericValues, order } = useContext(Context);
   const [tableData, setTableData] = useState([]);
   const [tableHeader, setTableHeader] = useState([]);
 
@@ -43,6 +43,19 @@ function Table() {
     } else { setTableData(newData); }
   }, [data, filterByName, filterByNumericValues]);
 
+  const negative = -1;
+
+  const sortASC = (a, b) => {
+    if (a[order.column] === 'unknown') { return 1; }
+    if (b[order.column] === 'unknown') { return negative; }
+    return a[order.column] - b[order.column];
+  };
+  const sortDESC = (a, b) => {
+    if (a[order.column] === 'unknown') { return 1; }
+    if (b[order.column] === 'unknown') { return negative; }
+    return b[order.column] - a[order.column];
+  };
+
   return (
     <div>
       <table>
@@ -58,15 +71,35 @@ function Table() {
         </thead>
         <tbody>
           {tableData.length > 0
-            && tableData.map((planetInfo, index) => (
-              <tr key={ index }>
-                {Object.values(planetInfo).map((info) => (
-                  <td key={ info }>
-                    {info}
-                  </td>
-                ))}
-              </tr>
-            ))}
+            && tableData.sort((a, b) => {
+              if (order.active) {
+                if (order.sort === 'ASC') {
+                  return sortASC(a, b);
+                }
+                if (order.sort === 'DESC') {
+                  return sortDESC(a, b);
+                }
+              }
+              return a.name.localeCompare(b.name);
+            })
+              .map((planetInfo, index) => (
+                <tr key={ index }>
+                  {Object.values(planetInfo).map((info, infoIndex) => {
+                    if (infoIndex === 0) {
+                      return (
+                        <td data-testid="planet-name" key={ info }>
+                          {info}
+                        </td>
+                      );
+                    }
+                    return (
+                      <td key={ info }>
+                        {info}
+                      </td>
+                    );
+                  })}
+                </tr>
+              ))}
         </tbody>
       </table>
     </div>
